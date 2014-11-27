@@ -52,7 +52,7 @@
      * @returns Void(0)
      */
     mq.listenForChange = function() {
-        var query_string;
+        var query_string, properties;
 
         // Get the value of html { font-family } from the element style.
         if (document.documentElement.currentStyle) {
@@ -60,7 +60,12 @@
         }
 
         if (window.getComputedStyle) {
-            query_string = window.getComputedStyle(document.documentElement,null).getPropertyValue('font-family');
+            properties = window.getComputedStyle(document.body,':after');
+            if ('getCSSPropertyValue' in properties)
+                query_string = properties.getCSSPropertyValue("content").cssText;
+            else
+                query_string = properties.getPropertyValue("content");
+            query_string.replace(/^("+)|("+)$/g, '');
         }
 
         // No support for CSS enumeration? Return and avoid errors.
